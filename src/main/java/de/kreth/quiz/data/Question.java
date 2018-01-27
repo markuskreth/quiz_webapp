@@ -1,11 +1,13 @@
 package de.kreth.quiz.data;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Question {
+public class Question implements Serializable {
 
+	private static final long serialVersionUID = 5385618773122684243L;
 	private final String question;
 	private final List<Answer> answers;
 	private int choosen;

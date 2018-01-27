@@ -60,11 +60,7 @@
 <script>
 
 function nextQuestion() {
-	$.get("quiz?title", function(responseText) {
-		$("title").text(responseText);
-	});
-	
-	$.get("quiz?content", function(responseText) {
+	$.get("quiz?next", function(responseText) {
 		$("#content").append(responseText).append("<br>");
 	});
 	
@@ -87,6 +83,10 @@ function updateStatistics() {
 }
 
 $(document).ready(function(){
+	$.get("quiz?title", function(responseText) {
+		$("title").text(responseText);
+	});
+	
 	updateStatistics();
 	}); 
 </script>

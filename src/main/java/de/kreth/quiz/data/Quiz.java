@@ -1,13 +1,15 @@
 package de.kreth.quiz.data;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-public class Quiz {
+public class Quiz implements Serializable {
 
+	private static final long serialVersionUID = -8938149899710233257L;
 	private final String title;
 	private final List<Question> questions;
 	private int current = -1;
