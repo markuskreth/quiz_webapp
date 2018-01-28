@@ -2,12 +2,16 @@ package de.kreth.quiz.data;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-public class Quiz implements Serializable {
+import de.ralleytn.simple.json.JSONObject;
+
+public class Quiz implements Serializable, Data {
 
 	private static final long serialVersionUID = -8938149899710233257L;
 	private final String title;
@@ -48,6 +52,19 @@ public class Quiz implements Serializable {
 	
 	public int size () {
 		return questions.size();
+	}
+	
+	@Override
+	public JSONObject toJson() {
+		Map<String, Object> values = new HashMap<>();
+		values.put("title", getTitle());
+
+		values.put("anzahlQuestions", size());
+		values.put("anzahlAntworten", totalAnswered());
+		values.put("anzahlRichtig", correctlyAnswered());
+
+		JSONObject json = new JSONObject(values);
+		return json;
 	}
 	
 	private Quiz(Build build) {

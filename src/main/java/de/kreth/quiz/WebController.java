@@ -3,6 +3,8 @@ package de.kreth.quiz;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletConfig;
@@ -17,6 +19,7 @@ import de.kreth.quiz.data.Answer;
 import de.kreth.quiz.data.Question;
 import de.kreth.quiz.data.Question.Build;
 import de.kreth.quiz.data.Quiz;
+import de.ralleytn.simple.json.JSONObject;
 
 @WebServlet(
 		urlPatterns = "/quiz",
@@ -56,71 +59,47 @@ public class WebController extends HttpServlet {
 	    	q = nextQuiz();
 	    	session.setAttribute("quiz", q);
 	    }
-	    response.setContentType("text/plain");
+	    response.setContentType("application/json");
 	    response.setCharacterEncoding("UTF-8");
 
 		Question current = (Question) session.getAttribute("question");
 		
 	    switch (request.getQueryString()) {
-		case "anzahlRichtig":
-			anzahlRichtig(response, q);
-			break;
-		case "anzahlQuestions":
-			anzahlQuestions(response, q);
-			break;
-		case "anzahlAntworten":
-			anzahlAntworten(response, q);
-			break;
-		case "content":
-			content(response, current);
+
+		case "current":
+			current(response, current);
 			break;
 
-		case "title":
-			title(response, q);
+		case "quiz":
+			quiz(response, q);
 			break;
 
 		case "next":
 			current = q.next();
 			session.setAttribute("question", current);
-			content(response, current);
+			current(response, current);
 			break;
-
-		case "today":
-			today(response);
-			break;
-
+			
 		default:
 			response.getWriter().println("unrecognized function!");
 			break;
 		}
 	}
 
-	private void today(HttpServletResponse response) throws IOException {
-		response.getWriter().write(df.format(new Date()));
+	private void quiz(HttpServletResponse response, Quiz quiz) throws IOException {
+		Map<String, Object> values = new HashMap<>();
+		values.put("today", df.format(new Date()));
+		JSONObject json = quiz.toJson();
+		json.putAll(values);
+		response.getWriter().write(json.toJSONString());
 	}
 
-	private void title(HttpServletResponse response, Quiz quiz) throws IOException {
-		response.getWriter().write(quiz.getTitle());
-	}
-
-	private void content(HttpServletResponse response, Question current) throws IOException {
+	private void current(HttpServletResponse response, Question current) throws IOException {
 		if(current != null) {
-			response.getWriter().write(current.getQuestion());
+			response.getWriter().write(current.toJson().toJSONString());
 		} else {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No question available");
 		}
 	}
 
-	private void anzahlAntworten(HttpServletResponse response, Quiz quiz) throws IOException {
-		response.getWriter().write(String.valueOf(quiz.totalAnswered()));
-	}
-
-	private void anzahlQuestions(HttpServletResponse response, Quiz quiz) throws IOException {
-		response.getWriter().write(String.valueOf(quiz.size()));
-	}
-
-	private void anzahlRichtig(HttpServletResponse response, Quiz quiz) throws IOException {
-		response.getWriter().write(String.valueOf(quiz.correctlyAnswered()));
-	}
-	
 }
