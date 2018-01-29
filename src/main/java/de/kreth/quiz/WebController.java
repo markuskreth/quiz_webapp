@@ -1,5 +1,6 @@
 package de.kreth.quiz;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -35,9 +36,10 @@ public class WebController extends HttpServlet {
 
 	public Quiz nextQuiz() {
 		Build bld = Question.build()
-				.add(Answer.build().setText("Antwort 1").setCorrect(false).build())
-				.add(Answer.build().setText("Antwort 2").setCorrect(true).build())
-				.add(Answer.build().setText("Antwort 3").setCorrect(false).build());
+				.setId(1)
+				.add(Answer.build().setId(1).setText("Antwort 1").setCorrect(false).build())
+				.add(Answer.build().setId(2).setText("Antwort 2").setCorrect(true).build())
+				.add(Answer.build().setId(3).setText("Antwort 3").setCorrect(false).build());
 		return Quiz.build()
 				.setTitle("Test Quiz java")
 				.add(bld.setQuestion("Die Frage 1").build())
@@ -86,6 +88,12 @@ public class WebController extends HttpServlet {
 		}
 	}
 
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		BufferedReader reader = req.getReader();
+		
+	}
+	
 	private void quiz(HttpServletResponse response, Quiz quiz) throws IOException {
 		Map<String, Object> values = new HashMap<>();
 		values.put("today", df.format(new Date()));

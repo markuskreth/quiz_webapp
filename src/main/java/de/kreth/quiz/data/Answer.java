@@ -9,10 +9,12 @@ import de.ralleytn.simple.json.JSONObject;
 public class Answer implements Serializable,Data {
 
 	private static final long serialVersionUID = -3262618312403569574L;
+	private final Integer id;
 	private final String text;
 	private final Boolean correct;
 
 	private Answer(Build bld) {
+		this.id = bld.id;
 		this.text = bld.text;
 		this.correct = bld.correct;
 	}
@@ -31,6 +33,10 @@ public class Answer implements Serializable,Data {
 		return json;
 	}
 	
+	public Integer getId() {
+		return id;
+	}
+	
 	public String getText() {
 		return text;
 	}
@@ -45,12 +51,18 @@ public class Answer implements Serializable,Data {
 	
 	public static class Build implements Builder<Answer> {
 
+		private Integer id;
 		private String text;
 		private Boolean correct;
 		
 		private Build() {
 		}
 		
+		public Build setId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
 		public Build setText(String text) {
 			this.text = text;
 			return this;
@@ -63,6 +75,9 @@ public class Answer implements Serializable,Data {
 		
 		@Override
 		public Answer build() {
+			if(id == null || id<0) {
+				throw new IllegalStateException("Invalid id = "+ id);
+			}
 			return new Answer(this);
 		}
 

@@ -13,11 +13,13 @@ import de.ralleytn.simple.json.JSONObject;
 public class Question implements Serializable, Data {
 
 	private static final long serialVersionUID = 5385618773122684243L;
+	private final Integer id;
 	private final String question;
 	private final List<Answer> answers;
 	private int choosen;
 
 	private Question(Build build) {
+		this.id = build.id;
 		this.question = build.question;
 		this.answers = Collections.unmodifiableList(build.answers);
 		this.choosen = -1;
@@ -51,6 +53,10 @@ public class Question implements Serializable, Data {
 		return json;
 	}
 	
+	public Integer getId() {
+		return id;
+	}
+	
 	public String getQuestion() {
 		return question;
 	}
@@ -69,10 +75,16 @@ public class Question implements Serializable, Data {
 	
 	public static class Build implements Builder<Question> {
 
+		private Integer id;
 		private String question;
 		private final List<Answer> answers = new LinkedList<>();
 
 		private Build() {
+		}
+		
+		public Build setId(Integer id) {
+			this.id = id;
+			return this;
 		}
 		
 		public Build setQuestion(String question) {
@@ -87,6 +99,9 @@ public class Question implements Serializable, Data {
 
 		@Override
 		public Question build() {
+			if(id == null || id<0) {
+				throw new IllegalStateException("Invalid id = "+ id);
+			}
 			return new Question(this);
 		}
 		
