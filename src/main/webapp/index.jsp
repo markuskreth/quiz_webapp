@@ -80,9 +80,7 @@
 
 <script>
 	function nextQuestion() {
-
-		var table = $("#answers");
-		table.empty();
+		$("#answers").empty();
 		$.ajax({
 			type : "GET",
 			url : "quiz?next",
@@ -91,43 +89,54 @@
 			},
 			success : function(question) {
 				$("#questionText").text(question.question);
-				var index = 0;
-
-				question.answers.forEach(function(el) {
-					var row = $("#templates #answerTemplate").clone();
-					row.prop("id", "answer" + index);
-					row.prop("index", index);
-					row.prop("answer", el);
-
-					var box = row.find("#checkboxcell [name='answerSelection']");
-					box.prop('id', "answer_box" + index);
-					box.prop("index", index);
-					box.change(answerCheckboxChange);
-					box.prop('answer', el);
-					box.prop('checked', false);
-					row.find("#text").text(el.text);
-					var resultBox = row.find("#answerresult");
-					resultBox.prop('id', "answer_resultBox" + index);
-					resultBox.prop("index", index);
-					resultBox.removeClass("correct");
-					resultBox.removeClass("incorrect");
-					table.append(row);
-
-				});
-
+				setupAnswerRows(question.answers);
 				updateStatistics();
 			}
 		});
 	}
 
+	function setupAnswerRows(answers) {
+		var table = $("#answers");
+		var index = 0;
+		answers.forEach(function(el) {
+			var row = $("#templates #answerTemplate").clone();
+			row.prop("id", "answer" + index);
+			row.prop("index", index);
+			row.prop("answer", el);
+	
+			var box = row.find("#checkboxcell [name='answerSelection']");
+			box.prop('id', "answer_box" + index);
+			box.prop("index", index);
+			box.change(answerCheckboxChange);
+			box.prop('answer', el);
+			box.prop('checked', false);
+			row.find("#text").text(el.text);
+			var resultBox = row.find("#answerresult");
+			resultBox.prop('id', "answer_resultBox" + index);
+			resultBox.prop("index", index);
+			resultBox.removeClass("correct");
+			resultBox.removeClass("incorrect");
+			table.append(row);
+		});
+	}
+	
 	function answerCheckboxChange() {
 		var answer = $(this).prop("answer");
 		var theRow = $(this).parent().parent();
+		$("#answers :input").prop('disabled', true);
 		var answerBox = theRow.find(".answerresult");
 		if (answer.correct) {
 			answerBox.addClass("correct");
 		} else {
 			answerBox.addClass("incorrect");
+// 			var table = theRow.parent().find("tr");
+			theRow.parent().find("tr").each(function (index, row) {
+				var box = $(this).find("[name='answerSelection']");
+				var answer = box.prop("answer");
+				if(answer.correct){
+					$(this).find(".answerresult").addClass("correct");
+				}
+			});
 		}
 	}
 
@@ -146,7 +155,9 @@
 	}
 
 	$(document).ready(function() {
-		Cookies.remove('JSESSIONID');
+		var sessId = Cookies.get("JSESSIONID", { path: "/quiz-webapp" });
+		Cookies.remove("JSESSIONID", { path: "/quiz-webapp" });
+		document.cookie = 'JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 		updateStatistics();
 	});
 </script>
