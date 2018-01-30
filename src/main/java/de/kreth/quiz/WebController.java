@@ -1,10 +1,13 @@
 package de.kreth.quiz;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,10 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import de.kreth.quiz.data.Answer;
 import de.kreth.quiz.data.Question;
-import de.kreth.quiz.data.Question.Build;
 import de.kreth.quiz.data.Quiz;
+import de.kreth.quiz.data.Quiz.Build;
+import de.kreth.quiz.storage.DatabaseConnection;
 import de.ralleytn.simple.json.JSONObject;
 
 @WebServlet(
@@ -35,22 +38,26 @@ public class WebController extends HttpServlet {
 	private static final DateFormat df = DateFormat.getDateTimeInstance();
 
 	public Quiz nextQuiz() {
-		Build bld = Question.build()
-				.setId(1L)
-				.add(Answer.build().setId(1L).setText("Antwort 1").setCorrect(false).build())
-				.add(Answer.build().setId(2L).setText("Antwort 2").setCorrect(true).build())
-				.add(Answer.build().setId(3L).setText("Antwort 3").setCorrect(false).build());
-		return Quiz.build()
-				.setTitle("Test Quiz java")
-				.add(bld.setQuestion("Die Frage 1").build())
-				.add(bld.setQuestion("Die Frage 2").build())
-				.build();
+		
+		Build builder = Quiz.build()
+				.setTitle("Test Quiz java");
+		try {
+			List<Question> questions = DatabaseConnection.INSTANCE.getDao(Question.class).getAll();
+			for (Question q: questions) {
+				builder.add(q);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return builder.build();
 	}
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		System.out.println("init " + getClass().getName() + " #" + count.incrementAndGet());
+		String path = config.getServletContext().getRealPath("/");
+		DatabaseConnection.INSTANCE.setSourceDir(new File(path));
+		System.out.println("init " + getClass().getName() + " #" + count.incrementAndGet() + " with path: " + path);
 	}
 	
 	@Override
@@ -91,7 +98,12 @@ public class WebController extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		BufferedReader reader = req.getReader();
-		
+		String line;
+		PrintWriter writer = resp.getWriter();
+		while ((line = reader.readLine()) != null) {
+			System.out.println(line);
+			writer.println(line);
+		}
 	}
 	
 	private void quiz(HttpServletResponse response, Quiz quiz) throws IOException {

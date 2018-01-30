@@ -1,5 +1,6 @@
 package de.kreth.quiz.storage;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,6 +18,8 @@ public enum DatabaseConnection {
 	
 	INSTANCE;
 	
+	private File sourceDir = new File(".");
+	
 	private String fileName = "questions.json";
 	
 	ReadWriteSource question = new ReadWriteSource() {
@@ -26,7 +29,7 @@ public enum DatabaseConnection {
 		@Override
 		public Writer getWriter() throws IOException {
 			getLock();
-			return new FileWriter(fileName) {
+			return new FileWriter(new File(sourceDir, fileName)) {
 				public void close() throws java.io.IOException {
 					super.close();
 					fileLock.unlock();
@@ -37,7 +40,7 @@ public enum DatabaseConnection {
 		@Override
 		public Reader getReader() throws IOException {
 			getLock();
-			return new FileReader(fileName) {
+			return new FileReader(new File(sourceDir, fileName)) {
 				public void close() throws IOException {
 					super.close();
 					fileLock.unlock();
@@ -57,6 +60,10 @@ public enum DatabaseConnection {
 			}
 		}
 	};
+	
+	public void setSourceDir(File sourceDir) {
+		this.sourceDir = sourceDir;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Data> Dao<T> getDao(Class<T> theClass) throws IOException {

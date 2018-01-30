@@ -3,6 +3,7 @@ package de.kreth.quiz.data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import de.ralleytn.simple.json.JSONObject;
 
@@ -40,7 +41,8 @@ public class Answer implements Serializable,Data {
 	}
 	
 	public static class Build implements Builder<Answer> {
-
+		private static final AtomicLong SEQUENCE = new AtomicLong();
+		
 		private Long id;
 		private String text;
 		private Boolean correct;
@@ -65,8 +67,10 @@ public class Answer implements Serializable,Data {
 		
 		@Override
 		public Answer build() {
-			if(id == null || id<0) {
-				throw new IllegalStateException("Invalid id = "+ id);
+			if(id == null || id.longValue()<SEQUENCE.get()) {
+				id = SEQUENCE.incrementAndGet();
+			} else if(id.longValue() > SEQUENCE.get()) {
+				SEQUENCE.set(id);
 			}
 			return new Answer(this);
 		}
