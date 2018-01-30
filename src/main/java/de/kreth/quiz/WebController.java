@@ -36,10 +36,10 @@ public class WebController extends HttpServlet {
 
 	public Quiz nextQuiz() {
 		Build bld = Question.build()
-				.setId(1)
-				.add(Answer.build().setId(1).setText("Antwort 1").setCorrect(false).build())
-				.add(Answer.build().setId(2).setText("Antwort 2").setCorrect(true).build())
-				.add(Answer.build().setId(3).setText("Antwort 3").setCorrect(false).build());
+				.setId(1L)
+				.add(Answer.build().setId(1L).setText("Antwort 1").setCorrect(false).build())
+				.add(Answer.build().setId(2L).setText("Antwort 2").setCorrect(true).build())
+				.add(Answer.build().setId(3L).setText("Antwort 3").setCorrect(false).build());
 		return Quiz.build()
 				.setTitle("Test Quiz java")
 				.add(bld.setQuestion("Die Frage 1").build())

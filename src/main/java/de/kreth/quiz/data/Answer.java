@@ -9,31 +9,21 @@ import de.ralleytn.simple.json.JSONObject;
 public class Answer implements Serializable,Data {
 
 	private static final long serialVersionUID = -3262618312403569574L;
-	private final Integer id;
-	private final String text;
-	private final Boolean correct;
 
+	private Long id;
+	private String text;
+	private Boolean correct;
+
+	private Answer() {
+	}
+	
 	private Answer(Build bld) {
 		this.id = bld.id;
 		this.text = bld.text;
 		this.correct = bld.correct;
 	}
 
-	@Override
-	public JSONObject toJson() {
-
-		Map<String, Object> values= new HashMap<>();
-		if(text != null) {
-			values.put("text", text);
-		}
-		if( correct != null) {
-			values.put("correct", correct);
-		}
-		JSONObject json = new JSONObject(values);
-		return json;
-	}
-	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	
@@ -51,14 +41,14 @@ public class Answer implements Serializable,Data {
 	
 	public static class Build implements Builder<Answer> {
 
-		private Integer id;
+		private Long id;
 		private String text;
 		private Boolean correct;
 		
 		private Build() {
 		}
 		
-		public Build setId(Integer id) {
+		public Build setId(Long id) {
 			this.id = id;
 			return this;
 		}
@@ -81,6 +71,26 @@ public class Answer implements Serializable,Data {
 			return new Answer(this);
 		}
 
+	}
+
+	@Override
+	public JSONObject toJson() {
+
+		Map<String, Object> values= new HashMap<>();
+		if(text != null) {
+			values.put("text", text);
+		}
+		if( correct != null) {
+			values.put("correct", correct);
+		}
+		JSONObject json = new JSONObject(values);
+		return json;
+	}
+	
+	public static Answer create(JSONObject object) {
+		Build bld = build();
+		bld.setText(object.getString("text")).setCorrect(object.getBoolean("correct"));
+		return bld.build();
 	}
 
 }
