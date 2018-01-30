@@ -80,7 +80,14 @@ public class Answer implements Serializable,Data {
 	@Override
 	public JSONObject toJson() {
 
+		if(id == null) {
+			throw new IllegalStateException("id must be set for serialization");
+		}
+		
 		Map<String, Object> values= new HashMap<>();
+
+		values.put("id", id);
+		
 		if(text != null) {
 			values.put("text", text);
 		}

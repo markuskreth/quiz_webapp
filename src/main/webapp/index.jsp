@@ -89,13 +89,13 @@
 			},
 			success : function(question) {
 				$("#questionText").text(question.question);
-				setupAnswerRows(question.answers);
+				setupAnswerRows(question.answers, question.id);
 				updateStatistics();
 			}
 		});
 	}
 
-	function setupAnswerRows(answers) {
+	function setupAnswerRows(answers, questionId) {
 		var table = $("#answers");
 		var index = 0;
 		answers.forEach(function(el) {
@@ -103,6 +103,7 @@
 			row.prop("id", "answer" + index);
 			row.prop("index", index);
 			row.prop("answer", el);
+			row.prop("questionId", questionId);
 	
 			var box = row.find("#checkboxcell [name='answerSelection']");
 			box.prop('id', "answer_box" + index);
@@ -129,7 +130,6 @@
 			answerBox.addClass("correct");
 		} else {
 			answerBox.addClass("incorrect");
-// 			var table = theRow.parent().find("tr");
 			theRow.parent().find("tr").each(function (index, row) {
 				var box = $(this).find("[name='answerSelection']");
 				var answer = box.prop("answer");
@@ -138,6 +138,21 @@
 				}
 			});
 		}
+		
+		var msg =  {};
+		msg.question = theRow.prop("questionId");
+		msg.answer = answer.id;
+		
+		$.ajax({
+			type: "PUT",
+			url : "quiz",
+			error : function(xhr, statusText) {
+				alert("Error: " + statusText);
+			},
+			data: msg,
+			success: updateStatistics,
+			dataType: "application/json"
+		});
 	}
 
 	function updateStatistics() {

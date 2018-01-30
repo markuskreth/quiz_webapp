@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import de.kreth.quiz.data.Answer;
 import de.kreth.quiz.data.Question;
 import de.kreth.quiz.data.Quiz;
 import de.kreth.quiz.data.Quiz.Build;
@@ -97,13 +98,33 @@ public class WebController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+	    HttpSession session = req.getSession();
+	    Quiz q = (Quiz) session.getAttribute("quiz");
+		
 		BufferedReader reader = req.getReader();
 		String line;
 		PrintWriter writer = resp.getWriter();
 		while ((line = reader.readLine()) != null) {
 			System.out.println(line);
 			writer.println(line);
+			long questionId = -1;
+			long answerId = -1;
+			for (String ele : line.split("&")) {
+				String[] pair = ele.split("=");
+				switch (pair[0]) {
+				case "question":
+					questionId = Long.parseLong(pair[1]);
+					break;
+				case "answer":
+					questionId = Long.parseLong(pair[1]);
+					break;
+				}
+			}
+			q.setAnswer(questionId, answerId);
 		}
+
+		
 	}
 	
 	private void quiz(HttpServletResponse response, Quiz quiz) throws IOException {

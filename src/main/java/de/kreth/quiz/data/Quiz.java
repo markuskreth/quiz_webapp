@@ -109,4 +109,14 @@ public class Quiz implements Serializable, Data {
 
 	}
 
+	public void setAnswer(long questionId, long answerId) {
+		Question question = questions.get(current);
+		if(question.getId().longValue() == questionId && answerId >=0) {
+			List<Answer> answers = question.getAnswers();
+			question.setChoice(answers.indexOf(answers.stream().filter(a -> a.getId()==answerId).findFirst().get()));
+			
+		}
+		
+	}
+
 }
