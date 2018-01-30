@@ -34,6 +34,7 @@ public class QuestionDao implements Dao<Question> {
 				sequence.set(fromJSON.getId());
 			}
 		}
+		in.close();
 	}
 
 	@Override
