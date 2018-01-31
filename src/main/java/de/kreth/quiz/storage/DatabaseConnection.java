@@ -20,11 +20,11 @@ public enum DatabaseConnection {
 	
 	private File sourceDir = new File(".");
 	
-	private String fileName = "questions.json";
+	private static final String fileName = "questions.json";
 	
 	ReadWriteSource question = new ReadWriteSource() {
 		
-		Lock fileLock = new ReentrantLock();
+		private final Lock fileLock = new ReentrantLock();
 		
 		@Override
 		public Writer getWriter() throws IOException {

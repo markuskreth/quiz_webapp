@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import de.kreth.quiz.data.Answer;
 import de.kreth.quiz.data.Question;
 import de.kreth.quiz.data.Quiz;
 import de.kreth.quiz.data.Quiz.Build;
@@ -74,26 +73,31 @@ public class WebController extends HttpServlet {
 
 		Question current = (Question) session.getAttribute("question");
 		
-	    switch (request.getQueryString()) {
-
-		case "current":
-			current(response, current);
-			break;
-
-		case "quiz":
+	    String queryString = request.getQueryString();
+	    if (queryString == null) {
 			quiz(response, q);
-			break;
+	    } else {
+			switch (queryString) {
 
-		case "next":
-			current = q.next();
-			session.setAttribute("question", current);
-			current(response, current);
-			break;
-			
-		default:
-			response.getWriter().println("unrecognized function!");
-			break;
-		}
+			case "current":
+				current(response, current);
+				break;
+
+			case "quiz":
+				quiz(response, q);
+				break;
+
+			case "next":
+				current = q.next();
+				session.setAttribute("question", current);
+				current(response, current);
+				break;
+				
+			default:
+				response.getWriter().println("unrecognized function!");
+				break;
+			}
+	    }
 	}
 
 	@Override
@@ -104,10 +108,9 @@ public class WebController extends HttpServlet {
 		
 		BufferedReader reader = req.getReader();
 		String line;
-		PrintWriter writer = resp.getWriter();
+		
 		while ((line = reader.readLine()) != null) {
 			System.out.println(line);
-			writer.println(line);
 			long questionId = -1;
 			long answerId = -1;
 			for (String ele : line.split("&")) {
@@ -117,14 +120,18 @@ public class WebController extends HttpServlet {
 					questionId = Long.parseLong(pair[1]);
 					break;
 				case "answer":
-					questionId = Long.parseLong(pair[1]);
+					answerId = Long.parseLong(pair[1]);
 					break;
 				}
 			}
 			q.setAnswer(questionId, answerId);
 		}
 
-		
+		session.setAttribute("quiz", q);
+
+		PrintWriter writer = resp.getWriter();
+		writer.write(q.toJson().toJSONString());
+		writer.close();
 	}
 	
 	private void quiz(HttpServletResponse response, Quiz quiz) throws IOException {
