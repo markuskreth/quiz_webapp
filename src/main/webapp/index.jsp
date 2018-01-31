@@ -146,12 +146,12 @@
 		$.ajax({
 			type: "PUT",
 			url : "quiz",
+      		contentType: "application/json",
+			data: msg,
 			error : function(xhr, statusText) {
 				alert("Error: " + statusText);
 			},
-			data: msg,
-			success: updateStatistics,
-			dataType: "application/json"
+			success: updateQuizData
 		});
 	}
 
@@ -162,11 +162,15 @@
 	}
 
 	function updateQuizData(quiz) {
-		$("title").text(quiz.title);
-		$("#content").append(quiz.today).append("<br>");
-		$("#anzahlQuestions").text(quiz.anzahlQuestions);
-		$("#anzahlAntworten").text(quiz.anzahlAntworten);
-		$("#anzahlRichtig").text(quiz.anzahlRichtig);
+		if(quiz) {
+			$("title").text(quiz.title);
+			$("#content").append(quiz.today).append("<br>");
+			$("#anzahlQuestions").text(quiz.anzahlQuestions);
+			$("#anzahlAntworten").text(quiz.anzahlAntworten);
+			$("#anzahlRichtig").text(quiz.anzahlRichtig);
+		} else {
+		updateStatistics();
+		}
 	}
 
 	$(document).ready(function() {

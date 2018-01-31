@@ -129,6 +129,8 @@ public class WebController extends HttpServlet {
 
 		session.setAttribute("quiz", q);
 
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
 		PrintWriter writer = resp.getWriter();
 		writer.write(q.toJson().toJSONString());
 		writer.close();
