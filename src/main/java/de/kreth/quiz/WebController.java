@@ -90,7 +90,11 @@ public class WebController extends HttpServlet {
 			case "next":
 				current = q.next();
 				session.setAttribute("question", current);
-				current(response, current);
+				if(current != null) {
+					current(response, current);
+				} else {
+					quiz(response, q);
+				}
 				break;
 				
 			default:
@@ -110,7 +114,6 @@ public class WebController extends HttpServlet {
 		String line;
 		
 		while ((line = reader.readLine()) != null) {
-			System.out.println(line);
 			long questionId = -1;
 			long answerId = -1;
 			for (String ele : line.split("&")) {
@@ -147,8 +150,6 @@ public class WebController extends HttpServlet {
 	private void current(HttpServletResponse response, Question current) throws IOException {
 		if(current != null) {
 			response.getWriter().write(current.toJson().toJSONString());
-		} else {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No question available");
 		}
 	}
 

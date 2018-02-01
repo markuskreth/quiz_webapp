@@ -164,7 +164,6 @@
 	function updateQuizData(quiz) {
 		if(quiz) {
 			$("title").text(quiz.title);
-			$("#content").append(quiz.today).append("<br>");
 			$("#anzahlQuestions").text(quiz.anzahlQuestions);
 			$("#anzahlAntworten").text(quiz.anzahlAntworten);
 			$("#anzahlRichtig").text(quiz.anzahlRichtig);
