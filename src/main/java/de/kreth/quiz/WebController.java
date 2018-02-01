@@ -93,6 +93,7 @@ public class WebController extends HttpServlet {
 				if(current != null) {
 					current(response, current);
 				} else {
+					q.setFinished(true);
 					quiz(response, q);
 				}
 				break;

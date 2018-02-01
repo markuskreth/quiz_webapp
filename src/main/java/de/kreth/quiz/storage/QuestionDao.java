@@ -1,6 +1,5 @@
 package de.kreth.quiz.storage;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -10,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import de.kreth.quiz.data.Question;
+import de.ralleytn.simple.json.JSONArray;
+import de.ralleytn.simple.json.JSONObject;
 import de.ralleytn.simple.json.JSONParseException;
 
 public class QuestionDao implements Dao<Question> {
@@ -25,26 +26,22 @@ public class QuestionDao implements Dao<Question> {
 	
 	private void fillCache() throws IOException, JSONParseException {
 		cache.clear();
-		BufferedReader in = new BufferedReader(source.getReader());
-		String line;
-		while ((line = in.readLine()) != null) {
-			Question fromJSON = Question.fromJSON(line);
-			cache.add(fromJSON);
-			if(fromJSON.getId()>sequence.get()) {
-				sequence.set(fromJSON.getId());
-			}
-		}
-		in.close();
+		JSONArray arr = new JSONArray(source.getReader());
+		arr.forEach(e -> {
+			cache.add(Question.fromJSON((JSONObject)e));
+		});
 	}
 
 	@Override
 	public void flush() throws IOException {
+		JSONArray list = new JSONArray();
+		for(Question q: cache) {
+			list.add(q.toJson());
+		}
+
 		Writer writer = source.getWriter();
 		BufferedWriter out = new BufferedWriter(writer);
-		for(Question q: cache) {
-			out.write(q.toJson().toJSONString());
-			out.newLine();
-		}
+		out.write(list.toJSONString());
 		out.close();
 	}
 	

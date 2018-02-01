@@ -17,6 +17,7 @@ public class Quiz implements Serializable, Data {
 	private final String title;
 	private final List<Question> questions;
 	private int current = -1;
+	private boolean finished;
 	
 	public Question next() {
 		current++;
@@ -62,6 +63,9 @@ public class Quiz implements Serializable, Data {
 		values.put("anzahlQuestions", size());
 		values.put("anzahlAntworten", totalAnswered());
 		values.put("anzahlRichtig", correctlyAnswered());
+		if(finished) {
+			values.put("finished", finished);
+		}
 
 		JSONObject json = new JSONObject(values);
 		return json;
@@ -117,6 +121,10 @@ public class Quiz implements Serializable, Data {
 			
 		}
 		
+	}
+
+	public void setFinished(boolean b) {
+		this.finished = b;
 	}
 
 }

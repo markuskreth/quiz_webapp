@@ -88,9 +88,13 @@
 				alert("Error: " + statusText);
 			},
 			success : function(question) {
-				$("#questionText").text(question.question);
-				setupAnswerRows(question.answers, question.id);
-				updateStatistics();
+				if(question.finished) {
+					$("#questionText").text("Beendet!");
+				} else {
+					$("#questionText").text(question.question);
+					setupAnswerRows(question.answers, question.id);
+					updateStatistics();
+				}
 			}
 		});
 	}
@@ -179,7 +183,6 @@
 		updateStatistics();
 	});
 </script>
-
 </head>
 <body>
 	<table class="tg">

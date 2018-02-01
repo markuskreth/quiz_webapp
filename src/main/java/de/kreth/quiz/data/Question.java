@@ -71,40 +71,15 @@ public class Question implements Serializable, Data {
 		choosen = choice;
 	}
 	
-	public static class Build implements Builder<Question> {
-
-		private Long id;
-		private String question;
-		private final List<Answer> answers = new LinkedList<>();
-
-		private Build() {
-		}
-		
-		public Build setId(Long id) {
-			this.id = id;
-			return this;
-		}
-		
-		public Build setQuestion(String question) {
-			this.question = question;
-			return this;
-		}
-
-		public Build add(Answer answer) {
-			answers.add(answer);
-			return this;
-		}
-
-		@Override
-		public Question build() {
-			return new Question(this);
-		}
-		
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Question [id=")
+		.append(id).append(", question=")
+		.append(question).append("]");
+		return builder.toString();
 	}
-
-	public static Build build() {
-		return new Build();
-	}
+	
 
 	@Override
 	public JSONObject toJson() {
@@ -135,7 +110,11 @@ public class Question implements Serializable, Data {
 	
 	public static Question fromJSON(String line) throws JSONParseException {
 		JSONObject o = new JSONObject(line);
-		
+		return fromJSON(o);
+	}
+
+	public static Question fromJSON(JSONObject o) {
+
 		Build bld = build().setId(o.getLong("id")).setQuestion(o.getString("question"));
 		JSONArray ans = o.getArray("answers");
 		if(ans != null) {
@@ -144,6 +123,41 @@ public class Question implements Serializable, Data {
 			}
 		}
 		return bld.build();
+	}
+
+	public static Build build() {
+		return new Build();
+	}
+
+	public static class Build implements Builder<Question> {
+
+		private Long id;
+		private String question;
+		private final List<Answer> answers = new LinkedList<>();
+
+		private Build() {
+		}
+		
+		public Build setId(Long id) {
+			this.id = id;
+			return this;
+		}
+		
+		public Build setQuestion(String question) {
+			this.question = question;
+			return this;
+		}
+
+		public Build add(Answer answer) {
+			answers.add(answer);
+			return this;
+		}
+
+		@Override
+		public Question build() {
+			return new Question(this);
+		}
+		
 	}
 
 }
