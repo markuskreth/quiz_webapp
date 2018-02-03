@@ -108,7 +108,18 @@ public class WebController extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-	    HttpSession session = req.getSession();
+	    String queryString = req.getQueryString();
+
+	    HttpSession session;
+	    if("restart".equalsIgnoreCase(queryString)) {
+	    	session = req.getSession(false);
+	    	if (req.isRequestedSessionIdValid() && session != null) {
+	    		session.invalidate();
+    		}
+	    	return;
+	    }
+	    
+	    session = req.getSession();
 	    Quiz q = (Quiz) session.getAttribute("quiz");
 		
 		BufferedReader reader = req.getReader();
