@@ -72,6 +72,7 @@ public class Quiz implements Serializable, Data {
 	}
 	
 	private Quiz(Build build) {
+		Collections.shuffle(build.questions);
 		this.questions = Collections.unmodifiableList(build.questions);
 		this.title = build.title;
 	}

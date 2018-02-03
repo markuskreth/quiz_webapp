@@ -29,6 +29,7 @@ public class Question implements Serializable, Data {
 		this();
 		this.id = build.id;
 		this.question = build.question;
+		Collections.shuffle(build.answers);
 		this.answers = Collections.unmodifiableList(build.answers);
 	}
 
