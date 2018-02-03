@@ -2,6 +2,7 @@ package de.kreth.quiz.storage;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +27,12 @@ public class QuestionDao implements Dao<Question> {
 	
 	private void fillCache() throws IOException, JSONParseException {
 		cache.clear();
-		JSONArray arr = new JSONArray(source.getReader());
+		Reader reader = source.getReader();
+		JSONArray arr = new JSONArray(reader);
 		arr.forEach(e -> {
 			cache.add(Question.fromJSON((JSONObject)e));
 		});
+		reader.close();
 	}
 
 	@Override
