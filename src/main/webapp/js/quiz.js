@@ -99,8 +99,9 @@ function updateQuizData(quiz) {
 	}
 }
 
-$(document).ready(function() {
-
+function newQuiz() {
+	$("#questionText").text("");
+	$("#answers").empty();
 	$.ajax({
 		type: "PUT",
 		url : "quiz?restart",
@@ -110,4 +111,8 @@ $(document).ready(function() {
 		},
 		success: updateStatistics
 	});
+}
+
+$(document).ready(function() {
+	newQuiz();
 });

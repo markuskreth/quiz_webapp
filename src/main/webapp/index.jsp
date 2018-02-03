@@ -32,7 +32,7 @@
 		<div id="questionText"></div>
 		<table class="tg" id="answers">
 		</table>
-		<button type="button" onclick="nextQuestion()">Ende</button>
+		<button type="button" onclick="newQuiz()">Ende</button>
 		<button type="button" onclick="nextQuestion()">Nächste</button>
 	</div>
 	<div><%=request.getRequestURL()%></div>
