@@ -96,7 +96,7 @@ public class Answer implements Serializable,Data {
 			values.put("text", text);
 		}
 		if( correct != null) {
-			values.put("correct", correct);
+			values.put("correct", correct.toString());
 		}
 		JSONObject json = new JSONObject(values);
 		return json;
@@ -110,6 +110,10 @@ public class Answer implements Serializable,Data {
 
 	public static Build build() {
 		return new Build();
+	}
+	
+	static void resetSequence() {
+		Build.SEQUENCE.set(0);
 	}
 	
 	public static class Build implements Builder<Answer> {

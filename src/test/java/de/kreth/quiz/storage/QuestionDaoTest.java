@@ -68,7 +68,7 @@ class QuestionDaoTest implements ReadWriteSource {
 				reader = new StringReader(this.toString());
 			}
 		};
-		this.reader = new StringReader("");
+		this.reader = new StringReader("[]");
 	}
 	
 	@Test
@@ -89,13 +89,13 @@ class QuestionDaoTest implements ReadWriteSource {
 		dao.flush();
 		String json = writer.toString();
 		assertTrue(json.length()>10);
-		assertEquals("{\"question\":\"One Test Question\",\"id\":1}\n", json);
+		assertEquals("[{\"question\":\"One Test Question\",\"id\":1}]", json);
 		
 	}
 	
 	@Test
 	void testGetAll() throws IOException {
-		reader = new StringReader("{\"question\":\"One Test Question\",\"id\":3}\n");
+		reader = new StringReader("[{\"question\":\"One Test Question\",\"id\":3}]\n");
 		Dao<Question> dao = DatabaseConnection.INSTANCE.getDao(Question.class);
 		List<Question> all = dao.getAll();
 		assertNotNull(all);
@@ -109,7 +109,7 @@ class QuestionDaoTest implements ReadWriteSource {
 	void sequenceIsIncrementedToMax() throws IOException, JSONParseException {
 		QuestionDao dao = new QuestionDao(this);
 		assertEquals(0, dao.sequence.get());
-		reader = new StringReader("{\"question\":\"One Test Question\",\"id\":3}\n");
+		reader = new StringReader("[{\"question\":\"One Test Question\",\"id\":3}]\n");
 		dao = new QuestionDao(this);
 		assertEquals(3, dao.sequence.get());
 	}

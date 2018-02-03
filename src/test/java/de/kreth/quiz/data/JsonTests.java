@@ -2,15 +2,21 @@ package de.kreth.quiz.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class JsonTests {
 
+	@BeforeEach
+	public void resetAnswerSequence() {
+		Answer.resetSequence();
+	}
+	
 	@Test
 	void testAnswer() {
 		Answer a = Answer.build().setId(1L).setText("The answer text").setCorrect(true).build();
 		String json = a.toJson().toJSONString();
-		assertEquals("{\"correct\":true,\"text\":\"The answer text\"}", json);
+		assertEquals("{\"correct\":\"true\",\"id\":1,\"text\":\"The answer text\"}", json);
 	}
 
 	@Test
@@ -32,6 +38,6 @@ class JsonTests {
 				.build();
 		q.setChoice(1);
 		String json = q.toJson().toJSONString();
-		assertEquals("{\"question\":\"The question text\",\"choosen\":1,\"answers\":[{\"correct\":false,\"text\":\"A1\"},{\"correct\":true,\"text\":\"A2\"},{\"correct\":false,\"text\":\"A3\"}],\"id\":1}", json);
+		assertEquals("{\"question\":\"The question text\",\"choosen\":1,\"answers\":[{\"correct\":\"false\",\"id\":1,\"text\":\"A1\"},{\"correct\":\"true\",\"id\":2,\"text\":\"A2\"},{\"correct\":\"false\",\"id\":3,\"text\":\"A3\"}],\"id\":1}", json);
 	}
 }

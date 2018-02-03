@@ -30,7 +30,11 @@ public class QuestionDao implements Dao<Question> {
 		Reader reader = source.getReader();
 		JSONArray arr = new JSONArray(reader);
 		arr.forEach(e -> {
-			cache.add(Question.fromJSON((JSONObject)e));
+			Question q = Question.fromJSON((JSONObject)e);
+			cache.add(q);
+			if(sequence.get()<q.getId()) {
+				sequence.set(q.getId());
+			}
 		});
 		reader.close();
 	}
