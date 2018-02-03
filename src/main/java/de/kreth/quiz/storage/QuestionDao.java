@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -54,7 +53,7 @@ public class QuestionDao implements Dao<Question> {
 	
 	@Override
 	public List<Question> getAll() {
-		return Collections.unmodifiableList(cache);
+		return new ArrayList<>(cache);
 	}
 
 	@Override

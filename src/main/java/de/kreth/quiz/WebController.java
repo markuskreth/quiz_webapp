@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,15 +37,23 @@ public class WebController extends HttpServlet {
 	private static final long serialVersionUID = -4764036064264922682L;
 
 	private static final DateFormat df = DateFormat.getDateTimeInstance();
-
+	private static int maxQuestions = 10;
+	
 	public Quiz nextQuiz() {
 		
 		Build builder = Quiz.build()
 				.setTitle("Test Quiz java");
 		try {
 			List<Question> questions = DatabaseConnection.INSTANCE.getDao(Question.class).getAll();
+			Collections.shuffle(questions);
+			int count = 0;
 			for (Question q: questions) {
+				if(count>=maxQuestions) {
+					break;
+				}
 				builder.add(q);
+				count++;
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
