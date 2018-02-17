@@ -27,10 +27,21 @@ class QuizTest {
 	@Test
 	public void testQuestion() {
 		Question a = TestQuestions.q1();
-		a.setChoice(1);
+		int answerId = -1;
+		
+		for(int i=0; i<a.getAnswers().size(); i++) {
+			if(a.getAnswers().get(i).getCorrect()) {
+				answerId = i;
+			}
+		}
+		a.setChoice(answerId);
 		assertTrue(a.isAnswered());
 		assertTrue(a.isAnsweredCorrectly());
-		a.setChoice(0);
+		if(answerId>0) {
+			a.setChoice(0);
+		}else {
+			a.setChoice(1);
+		}
 		assertTrue(a.isAnswered());
 		assertFalse(a.isAnsweredCorrectly());
 	}

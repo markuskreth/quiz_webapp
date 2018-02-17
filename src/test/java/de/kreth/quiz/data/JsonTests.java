@@ -30,6 +30,7 @@ class JsonTests {
 	@Test
 	void testQuestionWithAnswers() {
 		Question q = Question.build()
+				.setShuffle(false)
 				.setId(1L)
 				.setQuestion("The question text")
 				.add(Answer.build().setId(1L).setText("A1").setCorrect(false).build())

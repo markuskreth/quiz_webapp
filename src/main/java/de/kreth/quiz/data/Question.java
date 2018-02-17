@@ -29,7 +29,9 @@ public class Question implements Serializable, Data {
 		this();
 		this.id = build.id;
 		this.question = build.question;
-		Collections.shuffle(build.answers);
+		if(build.shuffle) {
+			Collections.shuffle(build.answers);
+		}
 		this.answers = Collections.unmodifiableList(build.answers);
 	}
 
@@ -135,8 +137,14 @@ public class Question implements Serializable, Data {
 		private Long id;
 		private String question;
 		private final List<Answer> answers = new LinkedList<>();
+		private boolean shuffle = true;
 
 		private Build() {
+		}
+		
+		public Build setShuffle(boolean shuffle) {
+			this.shuffle = shuffle;
+			return this;
 		}
 		
 		public Build setId(Long id) {
