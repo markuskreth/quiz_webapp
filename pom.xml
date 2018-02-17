@@ -72,7 +72,7 @@
 				<version>2.2</version>
 				<configuration>
 					<url>http://kreth-development.de:8080/manager/text</url>
-					<server>kreth</server>
+					<server>krethtomcat</server>
 					<path>/quiz-webapp</path>
 				</configuration>
 			</plugin>
